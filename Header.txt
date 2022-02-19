@@ -1,0 +1,54 @@
+-------------------------------------------------- Under Employee Services ------------------------------------------
+
+                          <li><a href="<?php echo base_url('attendance/mark_attendance'); ?>">Attendance</a></li>
+                          <li><a href="<?php echo base_url('attendance/apply_leave'); ?>">Leave</a></li>
+                         
+-------------------------------------------------- Under My Tasks ---------------------------------------------------
+
+                           <?php if($this ->session-> userdata('userID')==252||$this ->session-> userdata('userID')==259) {?><li><a href="<?php echo base_url('attendance/emp_leave_status'); ?>">All Leave Applications <span class="badge badge-danger" id="leave-badge">0</span></a></li><?php }?>
+
+                           
+                          <?php if($this ->session-> userdata('userID')==252||$this ->session-> userdata('userID')==259) {?><li><a href="<?php echo base_url('attendance/view_attendance'); ?>">Employee Attendance</a></li><?php }?>
+
+                          <?php
+                             $menu = "hod_leave_status"; 
+                             $menu = $this ->session-> userdata('userID') == 252 ?"emp_leave_status":$menu;
+                             if($this ->session-> userdata('Is_reporting_head')==1 || 
+                                   $this ->session-> userdata('hod') ==1  ) {?>
+                                <li><a href="<?php echo base_url('attendance/'.$menu); ?>">Leave Applications<span class="badge badge-danger" id="leave-badge2">0</span></a></li>
+                                <?php }?>
+                                
+-------------------------------------------------  Notification Script ----------------------------------------------
+
+<!-- notifications --> 
+        <?php if($this ->session-> userdata('userID')==252||$this ->session-> userdata('userID')==259) {?>
+        <script>
+          setInterval(() => {
+          $.ajax({
+          type: "post",
+          url: "<?php echo base_url();?>attendance/get_pendingcount",
+          success: function (response) {
+           $("#leave-badge").text(response)
+           }
+          });
+          },3000);
+        </script>   
+      <?php }?>
+
+
+
+
+      <?php if($this ->session-> userdata('Is_reporting_head')==1 || $this ->session-> userdata('hod') ==1  ) {?>
+        <script>
+          setInterval(() => {
+          $.ajax({
+          type: "post",
+          url: "<?php echo base_url();?>attendance/get_pendingcount_hod",
+          success: function (response) {
+           $("#leave-badge2").text(response)
+           }
+          });
+          },3000);
+        </script>   
+      <?php }?>
+<!-- Close Notifications -->
