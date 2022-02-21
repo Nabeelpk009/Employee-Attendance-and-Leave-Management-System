@@ -357,13 +357,9 @@ class Attendance extends CI_Controller {
 	
 	 	date_default_timezone_set('Asia/Kolkata'); # add your city to set local time zone
    		$now = date('Y-m-d H:i:s');
-		   $day=date('d',strtotime($this->input->post("attendance_date")));
-		   $month=date('m',strtotime($this->input->post("attendance_date")));
-		   $year=date('Y',strtotime($this->input->post("attendance_date")));   
-		$leave_id_value=$this->attendance_m->check_leave(intval($day),intval($month),$year,$this ->session-> userdata('userID'));
 
-		if($_POST && $leave_id_value->leavetypeid <= 7 && $leave_id_value->leavetypeid != 3 )
-	    {
+		if($_POST )
+	        {
 		 $day2=date('D',strtotime($this->input->post("attendance_date")));
 		 $day3=date('d',strtotime($now));
 		 $day=date('d',strtotime($this->input->post("attendance_date")));
@@ -376,29 +372,38 @@ class Attendance extends CI_Controller {
 					"attendance" => $this->input->post("attendance")
 				
 				);
-		$timestamp = array(
+	  	 $timestamp = array(
 
 				    "userID" => $this ->session-> userdata('userID'),
-					"attendance_timestamp" => $now					
+				    "attendance_timestamp" => $now					
 				);
 
-				$this->attendance_m->update_attendance($present,intval($day),$day2,intval($day3),intval($month),$year);
-				$this->attendance_m->update_timestamp($timestamp,intval($day),$day2,intval($day3),intval($month),$year);
-				echo "<script>alert(' Attendance marked Successfully.');window.location.href = '".base_url()."attendance/mark_attendance"."';</script>";
-	     }
-	     else
-	     {
+				$leave_id_value=$this->attendance_m->check_leave(intval($day),intval($month),$year,$this ->session-> userdata('userID'));
+				
+				if ($leave_id_value['leavetypeid'] <= 7 && $leave_id_value['leavetypeid'] != 3)
+				{
+					$this->attendance_m->update_attendance($present,intval($day),$day2,intval($day3),intval($month),$year);
+					$this->attendance_m->update_timestamp($timestamp,intval($day),$day2,intval($day3),intval($month),$year);
+					echo "<script>alert(' Attendance marked Successfully.');window.location.href = '".base_url()."attendance/mark_attendance"."';</script>";
+				}
+				else
+	                        {
+					echo "<script>alert(' You are on Leave this Date.');window.location.href = '".base_url()."attendance/mark_attendance"."';</script>";
+	                        }
+	       }
+	       else
+	       {
 			
-			$data['leave']=$this->attendance_m->fetch_leave_present();	
-			$userID=$this ->session-> userdata('userID'); 
-    	    $this->load->view('employee/templates/header');
-            $this->load->view('employee/pages/attendance/mark_attendance',$data);
-            $this->load->view('employee/templates/footer');
+		$data['leave']=$this->attendance_m->fetch_leave_present();	
+		$userID=$this ->session-> userdata('userID'); 
+    	    	$this->load->view('employee/templates/header');
+            	$this->load->view('employee/pages/attendance/mark_attendance',$data);
+            	$this->load->view('employee/templates/footer');
 			
-	    }
-		
+	       }	
 	}
 
+	
 	public function view_attendance()
 	{   
 	    if($this ->session-> userdata('user_type')=="")
