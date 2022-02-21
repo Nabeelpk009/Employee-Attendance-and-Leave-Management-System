@@ -97,14 +97,26 @@ class Attendance_m extends CI_Model {
 
       public function check_leave($day,$month,$year,$userID)
       {
-        $this->db2->select("a$day AS 'leavetypeid'");
-       // $this->db2->from('emp_attendance');
         $this->db2->where("emp_id",$userID);
         $this->db2->where("attendance_month",$month);
-        $this->db2->where("attendance_year",$year);  
-        $query = $this->db2->get('emp_attendance');     
-        // $query = $this->db2->get();
-        return $query->row();
+        $this->db2->where("attendance_year",$year);
+        $query = $this->db2->get("emp_attendance");
+        $num = $query->num_rows();
+
+        if( $num > 0)
+        {
+          $this->db2->select("a$day AS 'leavetypeid'");
+          $this->db2->where("emp_id",$userID);
+          $this->db2->where("attendance_month",$month);
+          $this->db2->where("attendance_year",$year);  
+          $query = $this->db2->get('emp_attendance');     
+          return $query->row_array();
+        }
+        else
+          {  
+            $mark = array("leavetypeid" => '0');
+            return $mark;
+          }
       }
 
       public function edit_leave($table_name,$column_name,$column_value,$data)
