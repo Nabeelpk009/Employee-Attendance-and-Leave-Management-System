@@ -168,11 +168,10 @@ class Attendance extends CI_Controller {
 
 	
 	public function emp_leave_update()
-	{   $leave_id=$this->uri->segment(3);
-	
-		
+	{ 
+		$leave_id=$this->uri->segment(3);
+
 		$data['leave'] = $this->attendance_m->emp_get_leave($leave_id);
-		//$array2 = array(" emp_id" =>$leave->userID," emp_id" =>$leave->userID);
 		
 		date_default_timezone_set('Asia/Kolkata'); # add your city to set local time zone
 					 $now = date('Y-m-d H:i:s');
@@ -188,7 +187,7 @@ class Attendance extends CI_Controller {
 
 				$this->attendance_m->update_data('leaveapp','leave_id',$leave_id,$array);
 				echo "<script>alert('Status Updated Successfully.');window.location.href = '".base_url()."attendance/emp_leave_status"."';</script>";
-				//$this->attendance_m->update_leave($data['leave']);
+				
 				
 
 		}
@@ -199,19 +198,63 @@ class Attendance extends CI_Controller {
 		$from_month = date('m',strtotime($data['leave']->from_date));
 		$to_month = date('m',strtotime($data['leave']->to_date));
 		$month_diff = ($to_month-$from_month)+1;		
-	
-		if($this->input->post("hr_status")==1 && $month_diff>2)
+		
+		if($this->input->post("hr_status")==1 && $month_diff==4)
 		{
 			$data1 = intval(date('d',strtotime($data['leave']->from_date)));
 			$lastdate = date('t',strtotime($data['leave']->from_date));
 			$firstdate = date('1',strtotime($data['leave']->to_date));
-			$data2 = intval(date('d',strtotime($data['leave']->to_date)));
-			//$day="a".date('d',strtotime($data['leave']->to_date));
+			$data4 = intval(date('d',strtotime($data['leave']->to_date)));
+
+			$month=date('m',strtotime($data['leave']->from_date));
+			$month2 = intval($month)+1;
+			$month3 = intval($month)+2;
+			$month4=date('m',strtotime($data['leave']->to_date));
+			
+
+			$data2 = cal_days_in_month(CAL_GREGORIAN, $month2, date('Y'));
+			$data3 = cal_days_in_month(CAL_GREGORIAN, $month3, date('Y'));
+
+			$year=date('Y',strtotime($data['leave']->from_date));
+
+				$update_longleave = array();
+
+				for ($x = $data1; $x <= $lastdate; $x++)
+				$update_longleave['a'.$x] = $this->input->post('leave_type');
+
+				$update_longleave_2 = array();
+
+				for ($x = $firstdate; $x <= $data2; $x++)
+				$update_longleave_2['a'.$x] = $this->input->post('leave_type');
+				
+				$update_longleave_3 = array();
+
+				for ($x = $firstdate; $x <= $data3; $x++)
+				$update_longleave_3['a'.$x] = $this->input->post('leave_type');
+			
+				$update_longleave_4 = array();
+
+				for ($x = $firstdate; $x <= $data4; $x++)
+				$update_longleave_4['a'.$x] = $this->input->post('leave_type');
+				
+			$this->attendance_m->update_longleave($data['leave']->userID,$year,intval($month),$update_longleave);
+			$this->attendance_m->update_longleave2($data['leave']->userID,$year,intval($month2),$update_longleave_2);
+			$this->attendance_m->update_longleave3($data['leave']->userID,$year,intval($month3),$update_longleave_3);
+			$this->attendance_m->update_longleave4($data['leave']->userID,$year,intval($month4),$update_longleave_4);
+			echo "<script>alert('Status Updated Successfully.');window.location.href = '".base_url()."attendance/emp_leave_status"."';</script>";
+		}
+		else if($this->input->post("hr_status")==1 && $month_diff==3)
+		{
+			$data1 = intval(date('d',strtotime($data['leave']->from_date)));
+			$lastdate = date('t',strtotime($data['leave']->from_date));
+			$firstdate = date('1',strtotime($data['leave']->to_date));
+			$data3 = intval(date('d',strtotime($data['leave']->to_date)));
+
 			$month=date('m',strtotime($data['leave']->from_date));
 			$month3=date('m',strtotime($data['leave']->to_date));
 			$month2 = intval($month)+1;
 			
-			$data3 = cal_days_in_month(CAL_GREGORIAN, $month2, date('Y'));
+			$data2 = cal_days_in_month(CAL_GREGORIAN, $month2, date('Y'));
 			
 			$year=date('Y',strtotime($data['leave']->from_date));
 
@@ -222,14 +265,14 @@ class Attendance extends CI_Controller {
 
 				$update_longleave_2 = array();
 
-				for ($x = $firstdate; $x <= $data3; $x++)
+				for ($x = $firstdate; $x <= $data2; $x++)
 				$update_longleave_2['a'.$x] = $this->input->post('leave_type');
 				
 				$update_longleave_3 = array();
 
-				for ($x = $firstdate; $x <= $data2; $x++)
+				for ($x = $firstdate; $x <= $data3; $x++)
 				$update_longleave_3['a'.$x] = $this->input->post('leave_type');
-			
+				
 			$this->attendance_m->update_longleave($data['leave']->userID,$year,intval($month),$update_longleave);
 			$this->attendance_m->update_longleave2($data['leave']->userID,$year,intval($month2),$update_longleave_2);
 			$this->attendance_m->update_longleave3($data['leave']->userID,$year,intval($month3),$update_longleave_3);
@@ -237,27 +280,27 @@ class Attendance extends CI_Controller {
 		}
 
 
-		else if($this->input->post("hr_status")==1 && $data3<0 )
+		else if($this->input->post("hr_status")==1 && $month_diff==2 )
 		{
 			$data1 = intval(date('d',strtotime($data['leave']->from_date)));
 			$lastdate = date('t',strtotime($data['leave']->from_date));
 			$firstdate = date('1',strtotime($data['leave']->to_date));
 			$data2 = intval(date('d',strtotime($data['leave']->to_date)));
-			//$day="a".date('d',strtotime($data['leave']->to_date));
+			
 			$month=date('m',strtotime($data['leave']->from_date));
 			$month2=date('m',strtotime($data['leave']->to_date));
 			$year=date('Y',strtotime($data['leave']->from_date));
-			//$array2 = array(
+			
 				$update_leave = array();
 
 				for ($x = $data1; $x <= $lastdate; $x++)
 				$update_leave['a'.$x] = $this->input->post('leave_type');
-				//$day => $this->input->post("leave_type"),
+				
 				$update_leave_2 = array();
 
 				for ($x = $firstdate; $x <= $data2; $x++)
 				$update_leave_2['a'.$x] = $this->input->post('leave_type');
-			
+				
 			$this->attendance_m->update_leave($data['leave']->userID,$year,intval($month),$update_leave);
 			$this->attendance_m->update_leave2($data['leave']->userID,$year,intval($month2),$update_leave_2);
 			echo "<script>alert('Status Updated Successfully.');window.location.href = '".base_url()."attendance/emp_leave_status"."';</script>";
@@ -266,26 +309,21 @@ class Attendance extends CI_Controller {
 		{
 			$data1 = intval(date('d',strtotime($data['leave']->from_date)));
 			$data2 = intval(date('d',strtotime($data['leave']->to_date)));
-			//$day="a".date('d',strtotime($data['leave']->to_date));
+			
 			$month3=date('m',strtotime($data['leave']->from_date));
 			$year=date('Y',strtotime($data['leave']->from_date));
-			//$array2 = array(
+
 				$update_leave_3 = array();
 
 				for ($x = $data1; $x <= $data2; $x++)
 				$update_leave_3['a'.$x] = $this->input->post('leave_type');
-				//$day => $this->input->post("leave_type"),
+		
 				
 			
 			$this->attendance_m->update_leave3($data['leave']->userID,$year,intval($month3),$update_leave_3);
 			 
 			echo "<script>alert('Status Updated Successfully.');window.location.href = '".base_url()."attendance/emp_leave_status"."';</script>";
 		}
-	// 	else {
-	// 	echo "<script>alert('Status Updated Successfully.');window.location.href = '".base_url()."attendance/emp_leave_status"."';</script>";
-
-	// }
-
 		else
 		{
 
