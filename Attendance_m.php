@@ -352,6 +352,41 @@ class Attendance_m extends CI_Model {
           // }
           // }
 
+          public function update_longleave4($userID,$year,$month4,$update_longleave_4)
+          {    
+            $this->db2->where("emp_id",$userID);
+            $this->db2->where("attendance_month",$month4);
+            $query = $this->db2->get("emp_attendance");
+            $num = $query->num_rows();
+    
+            if( $num > 0)
+            {
+                $this->db2->where("emp_id",$userID);
+                $this->db2->where("attendance_year",$year);
+                $this->db2->where("attendance_month",$month4);
+                $this->db2->update("emp_attendance",$update_longleave_4);           
+            
+              }
+              else
+              {
+                $mark = array(
+                    'emp_id' => $userID ,
+                    'attendance_year' => $year,
+                    'attendance_month' => $month4
+                    );
+                   
+                    $this->db2->insert('emp_attendance', $mark);
+                    $last_id = $this->db2->insert_id();
+                    
+                $this->db2->where("attendance_Id",$last_id);
+                $this->db2->where("emp_id",$userID);
+                $this->db2->where("attendance_year",$year);
+                $this->db2->where("attendance_month",$month4);
+                $this->db2->update("emp_attendance",$update_longleave_4);           
+                }
+              }
+    
+    
           public function update_longleave3($userID,$year,$month3,$update_longleave_3)
           {    
             $this->db2->where("emp_id",$userID);
