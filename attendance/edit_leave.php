@@ -104,9 +104,15 @@
         function cal(){
         if(document.getElementById("to_date")){
             document.getElementById("no_of_days").value=GetDays();
+            if(GetDays()>90)
+            {
+              document.getElementById('submit').disabled = true;
+            }
+            else{
+              document.getElementById('submit').disabled = false;
+            }
         }  
     }
-
   </script>               
         
 
