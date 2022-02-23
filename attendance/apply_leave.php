@@ -48,7 +48,7 @@
                         <label class="col-form-label col-md-3 col-sm-3 label-align" for="to_date">To Date <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 ">
-                          <input type="date" id="to_date" name="to_date" required="required" class="form-control " onchange="cal()" required>
+                          <input type="date" id="to_date" name="to_date" required="required" class="form-control " onchange="cal();cal2();" required>
                         </div>
                       </div>
                       
@@ -91,26 +91,55 @@
         
         <!-- /page content -->
   <script type="text/javascript">
-        function GetDays(){
+    
+        function GetDays()
+        {
                 var fromdate = new Date(document.getElementById("from_date").value);
                 var todate = new Date(document.getElementById("to_date").value);
                 return parseInt((todate - fromdate) / (24 * 3600 * 1000)+1);
         }
 
-        function cal(){
-        if(document.getElementById("to_date")){
+        function GetYear()
+        {
+                var fromyear = new Date(document.getElementById("from_date").value);
+                var toyear = new Date(document.getElementById("to_date").value);
+                var fyear = fromyear.getFullYear();
+                var tyear = toyear.getFullYear();
+                var yeardiff = tyear-fyear;
+                return yeardiff;
+        }
+
+        function cal2()
+        {
+         if(document.getElementById("no_of_days"))
+         {
+            if(GetYear()==1)
+            {
+              document.getElementById('submit').disabled = true;
+              alert('You can not apply for leave in between the selected date"".');
+            }
+          }
+        }
+
+        function cal()
+        {
+        if(document.getElementById("to_date"))
+        {        
             document.getElementById("no_of_days").value=GetDays();
+            
             if(GetDays()>90)
             {
               document.getElementById('submit').disabled = true;
+              alert('Leave can not be applied for more than 90 days.');
             }
-            else{
+            else
+            {
               document.getElementById('submit').disabled = false;
             }
         }  
-    }
+       }
 
-  </script>       
+  </script>              
         
 
 <!-- <script>
