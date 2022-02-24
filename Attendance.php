@@ -78,7 +78,7 @@ class Attendance extends CI_Controller {
 	{   
 		if($this ->session-> userdata('user_type')=="")
 		header("location:".base_url()."employee/index");  
-		$data['leaves'] = $this->attendance_m->get_leaves($this->session->userdata('userID'));
+		$data['leaves'] = $this->attendance_m->get_leaves($this->session->userdata('userID'),$this->session->userdata('portal_year'));
 			$this->load->view('employee/templates/header', $data);
 			$this->load->view('employee/pages/attendance/leave_status', $data);
 			$this->load->view('employee/templates/footer', $data);
@@ -105,7 +105,7 @@ class Attendance extends CI_Controller {
 	{   
 		if($this ->session-> userdata('user_type')=="")
 		header("location:".base_url()."employee/index");  
-		$data['leaves'] = $this->attendance_m->emp_get_leaves($this->session->userdata('userID'));
+		$data['leaves'] = $this->attendance_m->emp_get_leaves($this->session->userdata('userID'),$this->session->userdata('portal_year'));
 			$this->load->view('employee/templates/header', $data);
 			$this->load->view('employee/pages/attendance/emp_leave_status', $data);
 			$this->load->view('employee/templates/footer', $data);
@@ -117,7 +117,7 @@ class Attendance extends CI_Controller {
 		if($this ->session-> userdata('user_type')=="")
 		header("location:".base_url()."employee/index");  
 		  
-		   $data['leaves'] = $this->attendance_m->hod_get_leaves($this->session->userdata('userID'));
+		   $data['leaves'] = $this->attendance_m->hod_get_leaves($this->session->userdata('userID'),$this->session->userdata('portal_year'));
 			$this->load->view('employee/templates/header', $data);
 			$this->load->view('employee/pages/attendance/hod_leave_status_view', $data);
 			$this->load->view('employee/templates/footer', $data);
