@@ -45,34 +45,37 @@ class Attendance_m extends CI_Model {
           return $num;
         }
         
-        public function get_leaves($userid)
+        public function get_leaves($userid,$year)
         {
           $this->db2->order_by("leave_id", "desc");
           $this->db2->join('leave_type', 'leave_type.leavetype_id = leaveapp.leave_type_id','left');
           $this->db2->where("leaveapp.userID", $userid);
+          $this->db2->like("leaveapp.from_date", $year);
           $query = $this->db2->get('leaveapp');
           return $query->result();
         }
 
-      public function emp_get_leaves($userid)
+      public function emp_get_leaves($userid,$year)
       {
         $this->db2->select("*, user.name emp_name, u.name approval_name");
         $this->db2->order_by("leave_id", "desc");
         $this->db2->join('leave_type', 'leave_type.leavetype_id = leaveapp.leave_type_id','left');
         $this->db2->join('user', 'user.userID = leaveapp.userID', 'left');
         $this->db2->join('user as u', 'u.userID = leaveapp.hod_name', 'left');
+        $this->db2->like("leaveapp.from_date", $year);
         $query = $this->db2->get('leaveapp');
         return $query->result();
       }
 
       
-      public function hod_get_leaves($userid)
+      public function hod_get_leaves($userid,$year)
       {
         $this->db2->order_by("leave_id", "desc");
        // $this->db2->join('leave_type', 'leave_type.leavetype_id = leaveapp.leave_type_id','left');
         $this->db2->join('leave_type', 'leave_type.leavetype_id = leaveapp.leave_type_id','left');
         $this->db2->join('user', 'user.userID = leaveapp.userID');
         $this->db2->where("reporting_head",$userid);
+        $this->db2->like("leaveapp.from_date", $year);
         $query = $this->db2->get('leaveapp');
         return $query->result();
       }
