@@ -333,6 +333,47 @@ class Attendance extends CI_Controller {
 		}
 		
 	}
+	
+        public function hod_view_attendance()
+	{   
+	    if($this ->session-> userdata('user_type')=="")
+	    header("location:".base_url()."employee/index");
+
+		date_default_timezone_set('Asia/Kolkata'); # add your city to set local time zone
+		$now = date('Y-m-d H:i:s');
+			if($_POST)
+			{				
+				$array = array(
+						
+						"approval_remarks" => $this->input->post("approval_remarks"),
+						"approval_timestamp" => $now,
+						"hod_approval_status" => 1
+						
+					);
+					$this->attendance_m->update_attendance_approval($this->input->post("attendance_Id"),$array);
+					redirect(base_url('attendance/hod_view_attendance/'.date('Y').'/'.date('m')).'');
+	
+			}
+			else
+	       {
+			if($this->uri->segment(4)=="")
+			{
+				$data['month']=date('m');
+			    redirect(base_url('attendance/hod_view_attendance/'.date('Y').'/'.date('m')).'');
+			}
+			else
+			{
+				$data['month']=$this->uri->segment(4);
+			}
+			$data['users']=$this->attendance_m->fetch_hod_attendance_view($this ->session-> userdata('userID'),$data['month']);
+			//$data['departments']=$this->attendance_m->fetch_department($this ->session-> userdata('userID'));
+			//$data['attendance']=$this->attendance_m->fetch_hod_attendance($this ->session-> userdata('userID'));
+			//$data['leaves']=$this->attendance_m->fetch_leave_all();
+    	    $this->load->view('employee/templates/header');
+            $this->load->view('employee/pages/attendance/hod_view_attendance', $data);
+            $this->load->view('employee/templates/footer');
+		   }
+	}
 
 	public function hod_leave_update()
 	{   $leave_id=$this->uri->segment(3);
