@@ -228,6 +228,12 @@ class Attendance_m extends CI_Model {
             $this->db2->where("attendance_id",$attendance_id);          
             $this->db2->update("emp_attendance",$update_attendance2); 
           }
+    
+      public function update_attendance_approval($attendance_id,$array)
+      {     
+        $this->db2->where("attendance_id",$attendance_id);           
+        $this->db2->update("emp_attendance",$array); 
+      }
 
           public function update_leave($userID,$year,$month,$update_leave)
           {     
