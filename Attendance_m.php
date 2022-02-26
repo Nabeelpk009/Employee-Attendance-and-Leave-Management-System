@@ -234,6 +234,20 @@ class Attendance_m extends CI_Model {
         $this->db2->where("attendance_id",$attendance_id);           
         $this->db2->update("emp_attendance",$array); 
       }
+    
+         public function fetch_hod_attendance_view($userID,$month)
+          {
+            $this->db2->join('emp_attendance', 'user.userID = emp_attendance.emp_ID','left');
+            $this->db2->join('usertype', 'user.usertypeID = usertype.usertypeID','left');
+            $this->db2->join('department', 'usertype.dept_id = department.dept_id','left');
+            $this->db2->where('active',1);
+            $this->db2->where('completion',1);
+            $this->db2->where('emp_attendance.attendance_month',$month);
+            $this->db2->where('user.reporting_head',$userID);
+            $this->db2->order_by("name", "asc");
+            $query = $this->db2->get('user');
+            return $query->result_array();
+          }
 
           public function update_leave($userID,$year,$month,$update_leave)
           {     
