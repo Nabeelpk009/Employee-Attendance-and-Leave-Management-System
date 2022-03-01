@@ -26,7 +26,7 @@
                         <label class="col-form-label col-md-3 col-sm-3 label-align" for="no_of_days">Type of Leave<span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 ">
-                      <select name="leave_type" id="leave_type" class="form-control" required>
+                      <select name="leave_type" id="leave_type" class="form-control" onchange="cal3(this.value)" required>
                                 <option value=""> </option>
                               <?php 
                               foreach($leaves as $leave){
@@ -34,6 +34,14 @@
                               }?>
                             </select>
                             </div>
+                      </div>
+
+                      <div class="item form-group">
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="from_date">Available Leave <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 ">
+                          <input type="text" id="Available_Leave" name="Available_Leave" required="required" class="form-control " readonly>
+                        </div>
                       </div>
                      
                       <div class="item form-group">
@@ -56,7 +64,7 @@
                         <label class="col-form-label col-md-3 col-sm-3 label-align" for="no_of_days">No.of Days<span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 ">
-                          <input type="text" id="no_of_days" name="no_of_days" required="required" class="form-control " readonly>
+                          <input type="text" id="no_of_days" name="no_of_days" required="required" class="form-control "  readonly>
                         </div>
                       </div>
   
@@ -109,6 +117,20 @@
                 return yeardiff;
         }
 
+        
+        function cal3(value)
+        {
+          $.post("<?php base_url(); ?>get_leave_count",
+            {leaveTypeId:value},
+          function(data, status){
+              $("#Available_Leave").val(data);
+              if (data == 0)
+              document.getElementById('submit').disabled = true;
+              else
+              document.getElementById('submit').disabled = false;
+          });
+        }
+
         function cal2()
         {
          if(document.getElementById("no_of_days"))
@@ -138,22 +160,3 @@
             }
         }  
        }
-
-  </script>              
-        
-
-<!-- <script>
-
-$('#district_id').change(function() {
-             var dis = $(this).val();
-             $.ajax({
-                        url:"<?php echo base_url();?>trainer/fetch_branches",
-                        method:"POST",
-                        data:{district:dis},
-                        success:function(data)
-                        {
-                            $("#branch_id").html(data); 
-                        }
-             });
-            });
-</script> -->
