@@ -605,7 +605,17 @@ class Attendance_m extends CI_Model {
              return $query->row_array();
            }
  
-
+        public function fetch_leave_avilable($userID,$leaveid,$year)
+        {
+          $this->db2->select_sum("no_of_days");
+          $this->db2->where("leaveapp.userID", $userID);
+          $this->db->where('YEAR(from_date)', $year);
+          $this->db2->where("leaveapp.leave_type_id=",$leaveid );
+          $this->db2->where("leaveapp.hr_status=",1 );
+          $this->db2->where("leaveapp.hod_status=",1 );
+          $query = $this->db2->get('leaveapp');
+          return $query->row()->no_of_days;
+        }
           
 
  
