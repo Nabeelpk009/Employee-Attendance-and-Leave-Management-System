@@ -74,6 +74,29 @@ class Attendance extends CI_Controller {
 		}
 	}
 	
+	public function get_leave_count(){
+		if($_POST){
+			$year = date('Y');
+            $leaveTypeID = $_POST["leaveTypeId"];
+            $leavesavilable=$this->attendance_m->fetch_leave_avilable($this ->session-> userdata('userID'),$leaveTypeID,$year);
+			$leavecount=0;
+			if($leaveTypeID==8)
+			{
+				$leavecount = 12 - $leavesavilable;
+
+			}
+			else if($leaveTypeID==9)
+			{
+				$leavecount = 12 - $leavesavilable;
+			}
+			else{
+				$leavecount = "Not Applicable";
+			}
+			echo($leavecount);
+		}
+	}	
+	
+	
 	public function leave_status()
 	{   
 		if($this ->session-> userdata('user_type')=="")
