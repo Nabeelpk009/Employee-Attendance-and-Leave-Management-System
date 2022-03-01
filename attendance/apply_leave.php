@@ -1,5 +1,4 @@
 <!-- page content -->
-
 <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
@@ -7,9 +6,7 @@
                 <h3>Apply for Leave</h3>
               </div>
             </div>
-
             <div class="clearfix"></div>
-
             <div class="row">
               <div class="col-md-12 col-sm-12  ">
                 <div class="x_panel">
@@ -21,21 +18,19 @@
                   </div>
                   <div class="x_content">
                       <form id="demo-form2"  data-parsley-validate class="form-horizontal form-label-left" method="post" enctype="multipart/form-data" autocomplete="off">
-                      
                       <div class="item form-group">
                         <label class="col-form-label col-md-3 col-sm-3 label-align" for="no_of_days">Type of Leave<span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 ">
                       <select name="leave_type" id="leave_type" class="form-control" onchange="cal3(this.value)" required>
                                 <option value=""> </option>
-                              <?php 
+                              <?php
                               foreach($leaves as $leave){
                                   echo '<option value="'.$leave['leavetype_id'].'" >'.$leave['leave_name_full'].'</option>';
                               }?>
                             </select>
                             </div>
                       </div>
-
                       <div class="item form-group">
                         <label class="col-form-label col-md-3 col-sm-3 label-align" for="from_date">Available Leave <span class="required">*</span>
                         </label>
@@ -43,23 +38,20 @@
                           <input type="text" id="Available_Leave" name="Available_Leave" required="required" class="form-control " readonly>
                         </div>
                       </div>
-                     
                       <div class="item form-group">
                         <label class="col-form-label col-md-3 col-sm-3 label-align" for="from_date">From Date <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 ">
-                          <input type="date" id="from_date" name="from_date" required="required" class="form-control " onchange="cal()" required>
+                          <input type="date" id="from_date" name="from_date" required="required" class="form-control "   min="<?php echo date('Y-m-d', strtotime(date('Y-m-d'). '-7 day')); ?>" required>
                         </div>
                       </div>
-          
                       <div class="item form-group">
                         <label class="col-form-label col-md-3 col-sm-3 label-align" for="to_date">To Date <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 ">
-                          <input type="date" id="to_date" name="to_date" required="required" class="form-control " onchange="cal();cal2();" required>
+                          <input type="date" id="to_date" name="to_date" required="required" class="form-control " onchange="cal()" required>
                         </div>
                       </div>
-                      
                       <div class="item form-group">
                         <label class="col-form-label col-md-3 col-sm-3 label-align" for="no_of_days">No.of Days<span class="required">*</span>
                         </label>
@@ -67,7 +59,6 @@
                           <input type="text" id="no_of_days" name="no_of_days" required="required" class="form-control "  readonly>
                         </div>
                       </div>
-  
                       <div class="item form-group">
                         <label class="col-form-label col-md-3 col-sm-3 label-align" for="reason">Reason <span class="required">*</span>
                         </label>
@@ -75,7 +66,6 @@
                           <textarea name="reason" id="reason" class="form-control" placeholder="Enter the Reason for Leave" required></textarea>
                         </div>
                       </div>
-                      
                       <div class="ln_solid"></div>
                       <div class="item form-group">
                         <div class="col-md-6 col-sm-6 offset-md-3">
@@ -85,28 +75,21 @@
                         </center>
                         </div>
                       </div>
-
                     </form>
-
-
-
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        
         <!-- /page content -->
   <script type="text/javascript">
-    
         function GetDays()
         {
                 var fromdate = new Date(document.getElementById("from_date").value);
                 var todate = new Date(document.getElementById("to_date").value);
                 return parseInt((todate - fromdate) / (24 * 3600 * 1000)+1);
         }
-
         function GetYear()
         {
                 var fromyear = new Date(document.getElementById("from_date").value);
@@ -116,21 +99,18 @@
                 var yeardiff = tyear-fyear;
                 return yeardiff;
         }
-
-        
         function cal3(value)
         {
           $.post("<?php base_url(); ?>get_leave_count",
             {leaveTypeId:value},
           function(data, status){
               $("#Available_Leave").val(data);
-              if (data == 0)
+              if (data == 0 )
               document.getElementById('submit').disabled = true;
               else
               document.getElementById('submit').disabled = false;
           });
         }
-
         function cal2()
         {
          if(document.getElementById("no_of_days"))
@@ -141,25 +121,42 @@
               alert('You can not apply for leave in between the selected date"".');
             }
           }
+           
+          console.log($("#no_of_days").val() > $("#Available_Leave").val());
+          if($("#no_of_days").val() > $("#Available_Leave").val()){
+            alert('Leave can not be applied for more than Available days2.'); 
+            document.getElementById('submit').disabled = true;  
+          }
+          else{
+            document.getElementById('submit').disabled = false;
+          }
         }
-
         function cal()
         {
-        if(document.getElementById("to_date"))
-        {        
-            document.getElementById("no_of_days").value=GetDays();
-            
-            if(GetDays()>90)
-            {
-              document.getElementById('submit').disabled = true;
-              alert('Leave can not be applied for more than 90 days.');
-            }
-            else
-            {
-              document.getElementById('submit').disabled = false;
-            }
-        }  
-       }
+          
+          if(! $("#leave_type").val()) alert("leave type is required")
+          var fromDate = $("#from_date").val();
+          var toDate = $("#to_date").val();
+          
+          $("#no_of_days").val(GetDays());
+          var noOfDays = $("#no_of_days").val();
+              noOfDays = parseInt(noOfDays);
+          var avilableLeave = $("#Available_Leave").val();
+              avilableLeave = parseInt(avilableLeave);
+         
+          if(noOfDays > 90){
+            $('#submit').prop('disabled', true);
+            alert('Leave can not be applied for more than 90 days.');
+          }else if(GetYear() > 0){
+            $('#submit').prop('disabled', true);
+            alert('Apply leave in the same year');
+          }else if(noOfDays > avilableLeave){
+            $('#submit').prop('disabled', true);
+            alert('Leave can not be applied for more than Available days.');
+          }else{
+            $('#submit').prop('disabled', false);
+          }
 
-  </script>       
-        
+     
+       }
+  </script>
